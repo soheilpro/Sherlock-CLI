@@ -26,6 +26,12 @@ namespace Sherlock
             set;
         }
 
+        INode Clipboard
+        {
+            get;
+            set;
+        }
+
         bool ShouldExit
         {
             get;

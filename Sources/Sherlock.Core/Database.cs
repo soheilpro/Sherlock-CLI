@@ -81,6 +81,18 @@ namespace Sherlock.Core
             _isDirty = true;
         }
 
+        public void MoveFolder(IFolder folder, IFolder newParentFolder)
+        {
+            this.DeleteFolder(folder);
+            this.AddFolder(folder, newParentFolder);
+        }
+
+        public void MoveItem(IItem item, IFolder newParentFolder)
+        {
+            this.DeleteItem(item);
+            this.AddItem(item, newParentFolder);
+        }
+
         public void UpdateItem(IItem item, string value, bool isSecret)
         {
             ((Item)item).Value = value;

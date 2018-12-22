@@ -4,13 +4,23 @@ using CommandLine;
 
 namespace Sherlock.Commands
 {
-    internal class MoveFolderCommand : CommandBase<MoveFolderOptions>
+    internal class RenameItemCommand : CommandBase<RenameItemOptions>
     {
         public override string Name
         {
             get
             {
-                return "mvdir";
+                return "ren";
+            }
+        }
+
+        public override string[] Aliases
+        {
+            get
+            {
+                return new[] {
+                    "mv",
+                };
             }
         }
 
@@ -18,7 +28,7 @@ namespace Sherlock.Commands
         {
             get
             {
-                return "<folder> <name>";
+                return "<item> <name>";
             }
         }
 
@@ -26,55 +36,49 @@ namespace Sherlock.Commands
         {
             get
             {
-                return "Rename folder.";
+                return "Rename item.";
             }
         }
 
-        public MoveFolderCommand(IController controller) : base(controller)
+        public RenameItemCommand(IController controller) : base(controller)
         {
         }
 
         public override string[] GetSuggestions(string arg, int index, IContext context)
         {
             if (index == 1)
-                return GetFolderSuggestions(arg, index, context);
+                return GetItemSuggestions(arg, index, context);
 
             return base.GetSuggestions(arg, index, context);
         }
 
-        protected override void Execute(MoveFolderOptions options, IContext context)
+        protected override void Execute(RenameItemOptions options, IContext context)
         {
-            var folders = context.CurrentFolder.FindFolders(options.Folder).ToArray();
+            var items = context.CurrentFolder.FindItems(options.Item).ToArray();
 
-            if (folders.Length == 0)
+            if (items.Length == 0)
             {
-                ConsoleHelper.PrintError("Folder not found.");
+                ConsoleHelper.PrintError("Item not found.");
                 return;
             }
 
-            if (folders.Length > 1)
+            if (items.Length > 1)
             {
                 ConsoleHelper.PrintError("Too many matches:");
-                ConsoleHelper.PrintFolders(folders);
+                ConsoleHelper.PrintItems(items);
                 return;
             }
 
-            var folder = folders.Single();
+            var item = items.Single();
 
-            if (folder.IsRoot())
-            {
-                ConsoleHelper.PrintError("Cannot remove root folder.");
-                return;
-            }
-
-            context.Database.RenameFolder(folder, options.NewName);
+            context.Database.RenameItem(item, options.NewName);
         }
     }
 
-    internal class MoveFolderOptions
+    internal class RenameItemOptions
     {
         [Value(0, Required = true)]
-        public string Folder
+        public string Item
         {
             get;
             set;

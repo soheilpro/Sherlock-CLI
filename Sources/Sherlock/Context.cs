@@ -28,6 +28,12 @@ namespace Sherlock
             set;
         }
 
+        public INode Clipboard
+        {
+            get;
+            set;
+        }
+
         public bool ShouldExit
         {
             get;

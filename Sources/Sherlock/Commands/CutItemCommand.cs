@@ -4,13 +4,13 @@ using CommandLine;
 
 namespace Sherlock.Commands
 {
-    internal class MoveItemCommand : CommandBase<MoveItemOptions>
+    internal class CutItemCommand : CommandBase<CutItemOptions>
     {
         public override string Name
         {
             get
             {
-                return "mv";
+                return "cut";
             }
         }
 
@@ -18,7 +18,7 @@ namespace Sherlock.Commands
         {
             get
             {
-                return "<item> <name>";
+                return "<item>";
             }
         }
 
@@ -26,11 +26,11 @@ namespace Sherlock.Commands
         {
             get
             {
-                return "Rename item.";
+                return "Cut item.";
             }
         }
 
-        public MoveItemCommand(IController controller) : base(controller)
+        public CutItemCommand(IController controller) : base(controller)
         {
         }
 
@@ -42,7 +42,7 @@ namespace Sherlock.Commands
             return base.GetSuggestions(arg, index, context);
         }
 
-        protected override void Execute(MoveItemOptions options, IContext context)
+        protected override void Execute(CutItemOptions options, IContext context)
         {
             var items = context.CurrentFolder.FindItems(options.Item).ToArray();
 
@@ -61,21 +61,14 @@ namespace Sherlock.Commands
 
             var item = items.Single();
 
-            context.Database.RenameItem(item, options.NewName);
+            context.Clipboard = item;
         }
     }
 
-    internal class MoveItemOptions
+    internal class CutItemOptions
     {
         [Value(0, Required = true)]
         public string Item
-        {
-            get;
-            set;
-        }
-
-        [Value(1, Required = true)]
-        public string NewName
         {
             get;
             set;

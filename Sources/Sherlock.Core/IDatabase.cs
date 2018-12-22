@@ -27,6 +27,10 @@ namespace Sherlock.Core
 
         void RenameItem(IItem item, string name);
 
+        void MoveFolder(IFolder folder, IFolder newParentFolder);
+
+        void MoveItem(IItem item, IFolder newParentFolder);
+
         void UpdateItem(IItem item, string value, bool isSecret);
 
         void ChangePassword(string password);

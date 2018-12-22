@@ -2,14 +2,14 @@ using System;
 
 namespace Sherlock.Core
 {
-    public interface IItem : INode, IComparable<IItem>
+    public interface INode
     {
-        string Value
+        IFolder Parent
         {
             get;
         }
 
-        bool IsSecret
+        string Name
         {
             get;
         }
