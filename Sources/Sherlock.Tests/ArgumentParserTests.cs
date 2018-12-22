@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Sherlock.Tests
 {
-    public class UnitTest1
+    public class ArgumentParserTests
     {
         [Fact]
         public void SingleValue()
