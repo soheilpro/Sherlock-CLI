@@ -44,7 +44,7 @@ namespace Sherlock.Commands
 
         protected override void Execute(DeleteFolderOptions options, IContext context)
         {
-            var folders = context.CurrentFolder.FindFolders(options.Spec).ToArray();
+            var folders = context.CurrentFolder.FindFolders(options.Folder).ToArray();
 
             if (folders.Length == 0)
             {
@@ -75,7 +75,7 @@ namespace Sherlock.Commands
     internal class DeleteFolderOptions
     {
         [Value(0, Required = true)]
-        public string Spec
+        public string Folder
         {
             get;
             set;

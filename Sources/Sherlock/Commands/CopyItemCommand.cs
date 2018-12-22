@@ -55,7 +55,7 @@ namespace Sherlock.Commands
 
         protected override void Execute(CopyItemOptions options, IContext context)
         {
-            var items = context.CurrentFolder.FindItems(options.Spec).ToArray();
+            var items = context.CurrentFolder.FindItems(options.Item).ToArray();
 
             if (items.Length == 0)
             {
@@ -79,7 +79,7 @@ namespace Sherlock.Commands
     internal class CopyItemOptions
     {
         [Value(0, Required = true)]
-        public string Spec
+        public string Item
         {
             get;
             set;
