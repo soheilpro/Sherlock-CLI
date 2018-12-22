@@ -11,7 +11,8 @@ namespace Sherlock.Commands
             get;
         }
 
-        public abstract string Name {
+        public abstract string Name
+        {
             get;
         }
 
@@ -23,14 +24,16 @@ namespace Sherlock.Commands
             }
         }
 
-        public virtual string Arguments {
+        public virtual string Arguments
+        {
             get
             {
                 return null;
             }
         }
 
-        public abstract string HelpText {
+        public abstract string HelpText
+        {
             get;
         }
 

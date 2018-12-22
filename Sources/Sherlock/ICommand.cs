@@ -1,5 +1,4 @@
 using System;
-using Sherlock.Core;
 
 namespace Sherlock
 {

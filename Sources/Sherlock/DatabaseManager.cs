@@ -4,7 +4,7 @@ using Sherlock.Core;
 
 namespace Sherlock
 {
-  internal class DatabaseManager : IDatabaseManager
+    internal class DatabaseManager : IDatabaseManager
     {
         private IStorage _storage;
         private IPasswordProvider _passwordProvider;

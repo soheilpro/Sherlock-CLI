@@ -4,7 +4,7 @@ using Sherlock.Core;
 
 namespace Sherlock
 {
-  internal interface IDatabaseManager
+    internal interface IDatabaseManager
     {
         IDatabase LoadDatabase(string path);
 
