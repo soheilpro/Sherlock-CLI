@@ -58,14 +58,14 @@ namespace Sherlock
                 if (folders.Length == 0)
                 {
                     Console.WriteLine($"Folder not found: {folderName}");
-                    Environment.ExitCode = 1;
+                    Environment.ExitCode = 2;
                     return;
                 }
 
                 if (folders.Length > 1)
                 {
                     Console.WriteLine($"Too many matches: {folderName}");
-                    Environment.ExitCode = 1;
+                    Environment.ExitCode = 2;
                     return;
                 }
 
@@ -78,14 +78,14 @@ namespace Sherlock
             if (items.Length == 0)
             {
                 Console.WriteLine($"Item not found: {itemName}");
-                Environment.ExitCode = 1;
+                Environment.ExitCode = 2;
                 return;
             }
 
             if (items.Length > 1)
             {
                 Console.WriteLine($"Too many matches: {itemName}");
-                Environment.ExitCode = 1;
+                Environment.ExitCode = 2;
                 return;
             }
 

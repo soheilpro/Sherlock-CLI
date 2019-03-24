@@ -14,17 +14,24 @@ namespace Sherlock
 
             parser.ParseArguments<Options>(args)
                 .WithParsed<Options>(Run)
-                .WithNotParsed((errors) => Console.WriteLine($"Usage: sherlock <db> [--script script] [--item path]"));
+                .WithNotParsed((errors) => Console.WriteLine($"Usage: sherlock <db> [--password password] [--script script] [--item path]"));
         }
 
         private static void Run(Options options)
         {
             var storage = new FileSystemStorage();
-            var passwordProvider = new ConsolePasswordProvider();
+            var passwordProvider = options.Password != null ? new StaticPasswordProvider(options.Password) : new ConsolePasswordProvider() as IPasswordProvider;
             var databaseManager = new DatabaseManager(storage, passwordProvider);
 
             var databasePath = options.DatabasePath;
             var database = storage.Exists(databasePath) ? databaseManager.LoadDatabase(databasePath) : new Database();
+
+            if (database == null)
+            {
+                System.Console.WriteLine("Invalid password.");
+                Environment.ExitCode = 1;
+                return;
+            }
 
             var context = new Context();
             context.Database = database;
@@ -52,6 +59,13 @@ namespace Sherlock
         {
             [Value(0, MetaName = "DatabasePath", Required = true, HelpText = "Path to the database file.")]
             public string DatabasePath
+            {
+                get;
+                set;
+            }
+
+            [Option('p', "password", Required = false, HelpText = "Database password.")]
+            public string Password
             {
                 get;
                 set;

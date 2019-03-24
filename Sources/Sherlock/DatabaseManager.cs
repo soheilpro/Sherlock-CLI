@@ -19,25 +19,39 @@ namespace Sherlock
         {
             using (var stream = _storage.Load(path))
             {
-                var password = string.Empty;
+                var database = LoadDatabase(stream, string.Empty);
 
-                while (true)
+                if (database != null)
+                    return database;
+
+                do
                 {
-                    stream.Seek(0, SeekOrigin.Begin);
+                    var password = _passwordProvider.GetPassword();
+                    database = LoadDatabase(stream, password);
 
-                    try
-                    {
-                        var database = new Database();
-                        database.Load(stream, password);
-
+                    if (database != null)
                         return database;
-                    }
-                    catch (InvalidPasswordException)
-                    {
-                    }
-
-                    password = _passwordProvider.GetPassword();
                 }
+                while (_passwordProvider.CanProvideNewPassword());
+
+                return null;
+            }
+        }
+
+        private IDatabase LoadDatabase(Stream stream, string password)
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+
+            try
+            {
+                var database = new Database();
+                database.Load(stream, password);
+
+                return database;
+            }
+            catch (InvalidPasswordException)
+            {
+                return null;
             }
         }
 

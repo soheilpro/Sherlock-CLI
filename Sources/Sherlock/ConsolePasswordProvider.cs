@@ -10,5 +10,10 @@ namespace Sherlock
         {
             return ReadLine.ReadPassword("Password? ");
         }
+
+        public bool CanProvideNewPassword()
+        {
+            return true;
+        }
     }
 }
