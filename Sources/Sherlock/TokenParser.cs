@@ -5,27 +5,27 @@ using System.Text;
 
 namespace Sherlock
 {
-    internal class ArgumentParser
+    internal class TokenParser
     {
-        public string[] Parse(string text, bool ignoreUnclosedQuotes = false)
+        public string[] Parse(string text, char separator = ' ', bool ignoreUnclosedQuotes = false)
         {
-            return ParseCore(text, ignoreUnclosedQuotes).ToArray();
+            return ParseCore(text, separator, ignoreUnclosedQuotes).ToArray();
         }
 
-        private IEnumerable<string> ParseCore(string text, bool ignoreUnclosedQuotes)
+        private IEnumerable<string> ParseCore(string text, char separator, bool ignoreUnclosedQuotes)
         {
-            var argument = new StringBuilder();
+            var token = new StringBuilder();
 
             for (var i = 0; i < text.Length; i++)
             {
                 var currentChar = text[i];
 
-                if (currentChar == ' ')
+                if (currentChar == separator)
                 {
-                    if (argument.Length > 0)
+                    if (token.Length > 0)
                     {
-                        yield return argument.ToString();
-                        argument.Clear();
+                        yield return token.ToString();
+                        token.Clear();
                     }
 
                     continue;
@@ -46,7 +46,7 @@ namespace Sherlock
                             break;
                         }
 
-                        argument.Append(currentChar);
+                        token.Append(currentChar);
                     }
 
                     if (j == text.Length)
@@ -60,11 +60,11 @@ namespace Sherlock
                     continue;
                 }
 
-                argument.Append(currentChar);
+                token.Append(currentChar);
             }
 
-            if (argument.Length > 0)
-                yield return argument.ToString();
+            if (token.Length > 0)
+                yield return token.ToString();
         }
 
         public class UnclosedQuotationMarkException : Exception

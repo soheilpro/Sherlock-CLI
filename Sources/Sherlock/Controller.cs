@@ -45,50 +45,110 @@ namespace Sherlock
             return _commands;
         }
 
-        public void Run()
+        public void PrintItemValue(string path)
+        {
+            var paths = new TokenParser().Parse(path, separator: '/');
+            var folder = _context.Database.RootFolder;
+
+            for (var i = 0; i < paths.Length - 1; i++)
+            {
+                var folderName = paths[i];
+                var folders = folder.FindFolders(folderName).ToArray();
+
+                if (folders.Length == 0)
+                {
+                    Console.WriteLine($"Folder not found: {folderName}");
+                    Environment.ExitCode = 1;
+                    return;
+                }
+
+                if (folders.Length > 1)
+                {
+                    Console.WriteLine($"Too many matches: {folderName}");
+                    Environment.ExitCode = 1;
+                    return;
+                }
+
+                folder = folders.Single();
+            }
+
+            var itemName = paths[paths.Length - 1];
+            var items = folder.FindItems(itemName).ToArray();
+
+            if (items.Length == 0)
+            {
+                Console.WriteLine($"Item not found: {itemName}");
+                Environment.ExitCode = 1;
+                return;
+            }
+
+            if (items.Length > 1)
+            {
+                Console.WriteLine($"Too many matches: {itemName}");
+                Environment.ExitCode = 1;
+                return;
+            }
+
+            var item = items.Single();
+
+            Console.Write(item.Value);
+        }
+
+        public void RunScript(string script)
+        {
+            var statements = new TokenParser().Parse(script, separator: ';');
+
+            foreach (var statement in statements)
+                ExecuteStatemenet(statement);
+        }
+
+        public void RunInteractive()
         {
             ReadLine.AutoCompletionHandler = this;
-
-            var argumentParser = new ArgumentParser();
 
             while (!_context.ShouldExit)
             {
                 Console.WriteLine();
 
                 var currentFolderPath = _context.CurrentFolder.GetFullPath();
-                var line = ReadLine.Read($"{currentFolderPath}> ").Trim();
+                var statement = ReadLine.Read($"{currentFolderPath}> ").Trim();
 
-                if (line.Length == 0)
+                if (statement.Length == 0)
                     continue;
 
-                ReadLine.AddHistory(line);
+                ReadLine.AddHistory(statement);
 
-                string[] args;
-
-                try
-                {
-                    args = argumentParser.Parse(line).ToArray();
-                }
-                catch (ArgumentParser.UnclosedQuotationMarkException)
-                {
-                    using (new ColoredConsole(ConsoleColor.Red))
-                        Console.WriteLine("Unclosed quotation mark.");
-
-                    continue;
-                }
-
-                var command = FindCommand(args[0]);
-
-                if (command == null)
-                {
-                    using (new ColoredConsole(ConsoleColor.Red))
-                        Console.WriteLine("Invalid command.");
-
-                    continue;
-                }
-
-                command.Execute(args.Skip(1).ToArray(), _context);
+                ExecuteStatemenet(statement);
             }
+        }
+
+        private void ExecuteStatemenet(string statement)
+        {
+            string[] args;
+
+            try
+            {
+                args = new TokenParser().Parse(statement).ToArray();
+            }
+            catch (TokenParser.UnclosedQuotationMarkException)
+            {
+                using (new ColoredConsole(ConsoleColor.Red))
+                    Console.WriteLine("Unclosed quotation mark.");
+
+                return;
+            }
+
+            var command = FindCommand(args[0]);
+
+            if (command == null)
+            {
+                using (new ColoredConsole(ConsoleColor.Red))
+                    Console.WriteLine("Invalid command.");
+
+                return;
+            }
+
+            command.Execute(args.Skip(1).ToArray(), _context);
         }
 
         private ICommand FindCommand(string name)
@@ -113,7 +173,7 @@ namespace Sherlock
 
         string[] IAutoCompleteHandler.GetSuggestions(string line, int cursorIndex)
         {
-            var args = new ArgumentParser().Parse(line, true);
+            var args = new TokenParser().Parse(line, ignoreUnclosedQuotes: true);
 
             if (line.EndsWith(' '))
                 args = args.Union(new string[] { string.Empty }).ToArray();

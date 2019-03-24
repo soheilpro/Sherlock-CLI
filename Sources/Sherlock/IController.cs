@@ -7,6 +7,10 @@ namespace Sherlock
     {
         ICollection<ICommand> GetCommands();
 
-        void Run();
+        void PrintItemValue(string path);
+
+        void RunScript(string script);
+
+        void RunInteractive();
     }
 }
