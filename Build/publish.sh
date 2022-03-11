@@ -8,7 +8,7 @@ function _publish {
   rm -rf "$DIR/../Publish/$PLATFORM"
   mkdir -p "$DIR/../Publish/$PLATFORM"
 
-  dotnet publish "$DIR/../Sources/Sherlock/Sherlock.csproj" --configuration Release --runtime $PLATFORM --output "$DIR/../Publish/$PLATFORM" /p:PublishSingleFile=true /p:PublishTrimmed=true
+  dotnet publish "$DIR/../Sources/Sherlock/Sherlock.csproj" --configuration Release --runtime $PLATFORM --output "$DIR/../Publish/$PLATFORM"
 }
 
 _publish linux-x64
