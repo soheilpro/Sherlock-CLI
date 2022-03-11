@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Clipboard\Clipboard.csproj" />
     <ProjectReference Include="..\Sherlock.Core\Sherlock.Core.csproj" />
     <ProjectReference Include="..\Sherlock.Storage.FileSystem\Sherlock.Storage.FileSystem.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Clipboard" Version="1.0.0" />
     <PackageReference Include="CommandLineParser" Version="2.2.1" />
     <PackageReference Include="ReadLine" Version="2.0.0" />
   </ItemGroup>
